@@ -24,9 +24,14 @@ if (menuToggle && mainNav) {
 
 navLinks.forEach(link => {
     link.addEventListener('click', () => {
-        mainNav.classList.remove('open');
-        menuToggle.classList.remove('open');
-        menuToggle.setAttribute('aria-label', 'Open navigation');
+        if (mainNav) {
+            mainNav.classList.remove('open');
+        }
+
+        if (menuToggle) {
+            menuToggle.classList.remove('open');
+            menuToggle.setAttribute('aria-label', 'Open navigation');
+        }
     });
 });
 
@@ -56,23 +61,29 @@ window.addEventListener('scroll', () => {
 
 const revealElements = document.querySelectorAll('.reveal');
 
-const revealObserver = new IntersectionObserver(
-    entries => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.classList.add('visible');
-                revealObserver.unobserve(entry.target);
-            }
-        });
-    },
-    {
-        threshold: 0.12
-    }
-);
+if ('IntersectionObserver' in window) {
+    const revealObserver = new IntersectionObserver(
+        entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        },
+        {
+            threshold: 0.12
+        }
+    );
 
-revealElements.forEach(element => {
-    revealObserver.observe(element);
-});
+    revealElements.forEach(element => {
+        revealObserver.observe(element);
+    });
+} else {
+    revealElements.forEach(element => {
+        element.classList.add('visible');
+    });
+}
 
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', event => {
